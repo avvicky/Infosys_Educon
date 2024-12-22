@@ -8,4 +8,4 @@ eureka:
 
 resend:
   key: re_gAePxYjU_C9uu9HQKpLR4ZFsQgcno3uTC
-  from-email: onboarding@resend.dev
+  from-email: notification@avvicky.cfd

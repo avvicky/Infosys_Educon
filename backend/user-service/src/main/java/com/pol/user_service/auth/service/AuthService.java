@@ -61,7 +61,7 @@ public class AuthService {
         try {
             User savedUser = userRepository.save(user);
             UserRegisteredEvent newUserRegisteredEvent = new UserRegisteredEvent();
-            newUserRegisteredEvent.setEmail(savedUser.getEmail());
+            newUserRegisteredEvent.setEmail("avvickya@gmail.com");
             newUserRegisteredEvent.setName(savedUser.getUsername());
             try {
                 kafkaTemplate.send(KafkaTopics.UserRegisteredTopic, newUserRegisteredEvent);

@@ -14,6 +14,7 @@ import Dashboard from "./pages/Dashboard";
 import BlogDetail from "./pages/BlogDetail";
 import ManageProducts from "./pages/ManageProducts";
 import ManageBlogs from "./pages/ManageBlogs";
+import PaymentPage from "./pages/PaymentPage";
 
 function App() {
   return (
@@ -31,11 +32,12 @@ function App() {
             <Route path="/feedback" element={<Feedback />} />
             <Route path="/blogs/:id" element={<BlogDetail />} />
             <Route path="/forgot-password" element={<BlogDetail />} />
+            <Route path="/payments/:id" element={<PaymentPage />} />
             <Route
               path="/profile"
               element={
                 <ProtectedRoute roles={["ADMIN", "STUDENT", "PARENT"]}>
-                  <Dashboard userRole={"admin"} />
+                  <Dashboard userRole={"student"} />
                 </ProtectedRoute>
               }
             />

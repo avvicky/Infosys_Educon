@@ -19,7 +19,7 @@ import java.util.Map;
 public class KafkaConfig {
 
     private static final String BOOTSTRAP_SERVERS = "localhost:9092";
-    private static final String SCHEMA_REGISTRY_URL = "http://localhost:8090";
+    private static final String SCHEMA_REGISTRY_URL = "http://localhost:8081";
     private static final String GROUP_ID = "notification-service";
 
     // Consumer Configuration for Avro
@@ -36,9 +36,14 @@ public class KafkaConfig {
         props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, true); // Use specific Avro classes
 
         // Additional Configurations
-        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false); // Disable auto-commit
+        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, true); // Disable auto-commit
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest"); // Start from the beginning if no offset exists
         props.put(ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG, 300000); // 5 minutes
+        props.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, 30000); // 30 seconds (default range: 6-30000ms)
+        props.put(ConsumerConfig.HEARTBEAT_INTERVAL_MS_CONFIG, 10000); // Heartbeat every 10 seconds
+        props.put(ConsumerConfig.CONNECTIONS_MAX_IDLE_MS_CONFIG, 300000); // 5 minutes
+
+
 
         return new DefaultKafkaConsumerFactory<>(props);
     }

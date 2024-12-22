@@ -1,4 +1,5 @@
-package com.pol.user_service.config;
+package com.pol.payment_service.config;
+
 
 import io.confluent.kafka.serializers.KafkaAvroSerializerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -16,11 +17,12 @@ import java.util.Map;
 @EnableKafka
 @Configuration
 public class KafkaConfig {
+
     private static final String BOOTSTRAP_SERVERS = "localhost:9092";
     private static final String SCHEMA_REGISTRY_URL = "http://localhost:8081";
+
     @Bean
     public ProducerFactory<String, Object> producerFactory() {
-
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);

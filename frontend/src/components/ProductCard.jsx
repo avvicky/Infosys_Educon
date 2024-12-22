@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const ProductCard = ({ product }) => {
   return (
@@ -12,9 +13,12 @@ const ProductCard = ({ product }) => {
       {/* Product Price */}
       <div className="font-medium mb-4 text-gray-800">₹ {product.price}</div>
       {/* Enroll Button */}
-      <button className="py-2 px-4 rounded transition actionbutton">
+      <Link
+        to={`/payments/${product.id}`}
+        className="py-2 px-4 rounded transition actionbutton"
+      >
         Enroll
-      </button>
+      </Link>
     </div>
   );
 };

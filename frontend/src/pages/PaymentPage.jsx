@@ -1,20 +1,29 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { getUser } from "../services/authService";
+import API from "../utils/api";
 
-const PaymentPage = ({ product }) => {
+const PaymentPage = () => {
   const [loading, setLoading] = useState(false);
+  const [product, setProduct] = useState({});
   const user = getUser();
+  const { id } = useParams();
+
+  const fetchProductDetails = async () => {
+    const res = await API.get(`/courses/${id}`);
+    console.log(res);
+    setProduct(res.data);
+  };
 
   const handlePayment = async () => {
     setLoading(true);
 
     try {
       // Step 1: Create an order in the backend
-      const orderResponse = await axios.post(
+      const orderResponse = await API.post(
         "http://localhost:8080/payments/create",
         {
-          productId: product.id, // Replace with actual product ID
+          productId: id, // Replace with actual product ID
         }
       );
 
@@ -22,7 +31,7 @@ const PaymentPage = ({ product }) => {
 
       // Step 2: Initialize Razorpay
       const options = {
-        key: "YOUR_RAZORPAY_KEY_ID", // Replace with your Razorpay Key ID
+        key: import.meta.VITE_RAZORPAY_KEY_ID, // Replace with your Razorpay Key ID
         amount: amount, // Amount in paise
         currency: currency,
         name: "Edu_Consultancy",
@@ -30,12 +39,18 @@ const PaymentPage = ({ product }) => {
         order_id: order_id,
         handler: async (response) => {
           // Verify payment signature in the backend
-          const verificationResponse = await axios.post(
+          const verificationResponse = await API.post(
             "http://localhost:8080/payments/verify",
             {
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_order_id: response.razorpay_order_id,
               razorpay_signature: response.razorpay_signature,
+              email: user.sub,
+              username: user.name,
+              sub: "something",
+              paymentId: response.razorpay_payment_id,
+              productId: product.id,
+              orderId: response.razorpay_order_id,
             }
           );
 
@@ -63,6 +78,13 @@ const PaymentPage = ({ product }) => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchProductDetails();
+    return () => {
+      setProduct({});
+    };
+  }, []);
 
   return (
     <div className="flex flex-col items-center p-6 bg-gray-100 rounded-lg shadow-md">

@@ -76,5 +76,49 @@ public class EmailTemplates {
         """.formatted(username,otp);
     }
 
+    public String getPaymentConfirmationTemplate(String email, String username, String sub, String paymentId, String productId, String orderId) {
+        return """
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Payment Confirmation</title>
+            <style>
+                body { font-family: 'Arial', sans-serif; background-color: #f5f3ff; color: #4a356d; margin: 0; padding: 0; }
+                .container { max-width: 600px; margin: 30px auto; padding: 20px; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+                h2 { color: #6b21a8; margin-bottom: 10px; }
+                p { line-height: 1.6; margin: 10px 0; }
+                .info { background-color: #ede9fe; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+                .info p { margin: 5px 0; }
+                .button { display: inline-block; padding: 10px 20px; margin-top: 20px; color: #ffffff; background-color: #6b21a8; text-decoration: none; border-radius: 5px; }
+                .footer { margin-top: 20px; font-size: 12px; color: #6b7280; text-align: center; }
+                a { color: #6b21a8; text-decoration: none; }
+                a:hover { text-decoration: underline; }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h2>Payment Confirmation</h2>
+                <p>Hi %s,</p>
+                <p>Thank you for your payment! Your transaction was successful. Below are the details:</p>
+                <div class="info">
+                    <p><strong>Subscription:</strong> %s</p>
+                    <p><strong>Payment ID:</strong> %s</p>
+                    <p><strong>Order ID:</strong> %s</p>
+                </div>
+                <p>If you have any questions, feel free to reach out to us at <a href="mailto:%s">%s</a>.</p>
+                <p>We appreciate your trust in our service!<br>Warm regards,<br>EduCon</p>
+                <div class="footer">
+                    <p>&copy; 2024 EduCon. All rights reserved.</p>
+                </div>
+            </div>
+        </body>
+        </html>
+    """.formatted(username, sub, paymentId, orderId, email, email);
+    }
+
+
 
 }
