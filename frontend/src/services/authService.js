@@ -33,6 +33,8 @@ export const login = async (credentials) => {
   if (!response.ok) throw new Error("not able to register " + response);
 
   const { accessToken, refreshToken } = await response.json();
+  console.log("accessToken: ", accessToken);
+  console.log("refreshToken: ", refreshToken);
   localStorage.setItem("accessToken", accessToken);
   localStorage.setItem("refreshToken", refreshToken);
   return { accessToken, refreshToken };
