@@ -7,5 +7,5 @@ eureka:
       defaultZone: http://localhost:8761/eureka/
 
 resend:
-  key: re_gAePxYjU_C9uu9HQKpLR4ZFsQgcno3uTC
+  key: "key"
   from-email: notification@avvicky.cfd

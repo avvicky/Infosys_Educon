@@ -37,6 +37,6 @@ springdoc:
     path: /swagger-ui.html
 
 razorpay:
-  key_id: rzp_test_X80sChNR5wQIDv
-  key_secret: PO5BQnHkCxw0iqsCZP8EXaBE
+  key_id: "key_id"
+  key_secret: "key_secret"
 

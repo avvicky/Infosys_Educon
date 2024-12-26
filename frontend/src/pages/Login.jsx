@@ -16,7 +16,10 @@ const Login = () => {
   const navigate = useNavigate();
 
   const schema = z.object({
-    email: z.string().email("Invalid email format"),
+    email: z
+      .string()
+      .nonempty("Email is required")
+      .email("Invalid email format"),
     password: z
       .string()
       .min(8, "Password must be at least 8 characters")
@@ -108,7 +111,6 @@ const Login = () => {
               value={email}
               onChange={handleEmail}
               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-              required
             />
             {/* <input
               type="password"
@@ -123,7 +125,6 @@ const Login = () => {
                 value={password}
                 onChange={handlePassword}
                 className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                required
               />
               <button
                 type="button"
