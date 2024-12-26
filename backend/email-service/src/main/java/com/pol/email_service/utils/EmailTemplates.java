@@ -76,7 +76,7 @@ public class EmailTemplates {
         """.formatted(username,otp);
     }
 
-    public String getPaymentConfirmationTemplate(String email, String username, String sub, String paymentId, String productId, String orderId) {
+    public String getPaymentConfirmationTemplate(String email, String username, String paymentId, String productId, String orderId) {
         return """
         <!DOCTYPE html>
         <html lang="en">
@@ -104,7 +104,6 @@ public class EmailTemplates {
                 <p>Hi %s,</p>
                 <p>Thank you for your payment! Your transaction was successful. Below are the details:</p>
                 <div class="info">
-                    <p><strong>Subscription:</strong> %s</p>
                     <p><strong>Payment ID:</strong> %s</p>
                     <p><strong>Order ID:</strong> %s</p>
                 </div>
@@ -116,7 +115,7 @@ public class EmailTemplates {
             </div>
         </body>
         </html>
-    """.formatted(username, sub, paymentId, orderId, email, email);
+    """.formatted(username, paymentId, orderId, email, email);
     }
 
 

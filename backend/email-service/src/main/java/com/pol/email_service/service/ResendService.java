@@ -61,12 +61,12 @@ public class ResendService {
         return response.getId();
     }
 
-    public String sendPaymentSuccesfulEmail(String to, String name, String sub,String paymentId, String productId, String orderId) {
+    public String sendPaymentSuccesfulEmail(String to, String name,String paymentId, String productId, String orderId) {
         CreateEmailOptions options = CreateEmailOptions.builder()
                 .from(fromEmail)
                 .to(to)
                 .subject("Payment Successful")
-                .html(emailTemplates.getPaymentConfirmationTemplate(to,name,sub,paymentId,productId, orderId))
+                .html(emailTemplates.getPaymentConfirmationTemplate(to,name,paymentId,productId, orderId))
                 .build();
 
         CreateEmailResponse response = null;

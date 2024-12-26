@@ -7,15 +7,17 @@ import com.pol.user_service.auth.dto.RegisterRequestDTO;
 import com.pol.user_service.auth.model.User;
 import com.pol.user_service.auth.model.UserRole;
 import com.pol.user_service.auth.repository.UserRepository;
-import com.pol.user_service.constants.KafkaTopics;
+import com.pol.user_service.client.EmailFeignClient;
+//import com.pol.user_service.constants.KafkaTopics;
+import com.pol.user_service.dto.feign.NewUserRequestDto;
 import com.pol.user_service.exception.customExceptions.DatabaseAccessException;
 import com.pol.user_service.exception.customExceptions.UserAlreadyExists;
-import com.pol.user_service.schema.avro.UserRegisteredEvent;
+//import com.pol.user_service.schema.avro.UserRegisteredEvent;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.kafka.core.KafkaTemplate;
+//import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -39,8 +41,20 @@ public class AuthService {
     private final UserRoleService userRoleService;
     private final RefreshTokenService refreshTokenService;
 
+    private final EmailFeignClient emailFeignClient;
+
     private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
-    private final KafkaTemplate<String, Object> kafkaTemplate;
+
+//    public AuthService(PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, UserRepository userRepository, JwtService jwtService, UserRoleService userRoleService, RefreshTokenService refreshTokenService, EmailFeignClient emailFeignClient) {
+//        this.passwordEncoder = passwordEncoder;
+//        this.authenticationManager = authenticationManager;
+//        this.userRepository = userRepository;
+//        this.jwtService = jwtService;
+//        this.userRoleService = userRoleService;
+//        this.refreshTokenService = refreshTokenService;
+//        this.emailFeignClient = emailFeignClient;
+//    }
+//    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     public AuthResponseDTO register(RegisterRequestDTO registerRequestDTO){
         if(userRepository.existsByEmail(registerRequestDTO.getEmail())){
@@ -60,11 +74,16 @@ public class AuthService {
                 .build();
         try {
             User savedUser = userRepository.save(user);
-            UserRegisteredEvent newUserRegisteredEvent = new UserRegisteredEvent();
-            newUserRegisteredEvent.setEmail("avvickya@gmail.com");
-            newUserRegisteredEvent.setName(savedUser.getUsername());
+//            UserRegisteredEvent newUserRegisteredEvent = new UserRegisteredEvent();
+//            newUserRegisteredEvent.setEmail("avvickya@gmail.com");
+//            newUserRegisteredEvent.setName(savedUser.getUsername());
+
+            NewUserRequestDto newUserRequestDto = new NewUserRequestDto();
+            newUserRequestDto.setName(registerRequestDTO.getFirstName());
+            newUserRequestDto.setEmail(registerRequestDTO.getEmail());
             try {
-                kafkaTemplate.send(KafkaTopics.UserRegisteredTopic, newUserRegisteredEvent);
+//                kafkaTemplate.send(KafkaTopics.UserRegisteredTopic, newUserRegisteredEvent);
+                emailFeignClient.sendWelcomeEmail(newUserRequestDto);
             } catch (Exception kafkaException) {
                 logger.error("Failed to publish user registration event to Kafka", kafkaException);
             }

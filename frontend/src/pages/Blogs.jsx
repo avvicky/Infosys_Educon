@@ -1,16 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import { Close } from "@mui/icons-material";
 import { getBlogs } from "../services/blogService";
+import API from "../utils/api";
 
 export default function Blogs() {
   const [blogData, setBlogData] = useState([]);
+  const [loading, setLoading] = useState(true); // State for loading
+  const [error, setError] = useState(null); // State for error
 
   const fetchBlogs = async () => {
-    const res = await getBlogs();
-
-    setBlogData(res.blogs);
+    try {
+      const res = await API.get("/blogs");
+      setBlogData(res.data.blogs);
+    } catch (err) {
+      console.log(err);
+      setError(err.message || "An error occurred. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -21,11 +29,39 @@ export default function Blogs() {
     };
   }, []);
 
+  if (loading) {
+    return (
+      <>
+        <Navbar />
+        <div className="flex items-center justify-center bg-gray-100">
+          <div className="text-center">
+            <div className="loader mb-4"></div>{" "}
+            {/* Add your loader animation */}
+            <p className="text-gray-600">Loading blogs...</p>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  if (error) {
+    return (
+      <>
+        <Navbar />
+        <div className="flex items-center justify-center bg-gray-100">
+          <div className="text-center">
+            <h2 className="text-2xl font-semibold text-red-500 mb-4">Error</h2>
+            <p className="text-gray-600">{error}</p>
+          </div>
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
       <Navbar />
       <section className="py-12 min-h-[71vh]">
-        
         <div className="container mx-auto px-4">
           <h2 className="text-4xl font-semibold text-center mb-8 text-subtitile font-cinzel">
             Insights
@@ -57,20 +93,22 @@ export default function Blogs() {
       {/* Footer with "Create Your Blog" Button */}
       {/* Footer Section */}
       <footer className="bg-gray-800 text-white py-6">
-          <div className="container mx-auto px-4 text-center">
-            <p className="mb-2">&copy; 2024 Edu_Consultancy. All rights reserved.</p>
-            <p>
-              Follow us on {" "}
-              <a href="#" className="text-blue-400 hover:underline">
-                Twitter
-              </a>{" "}
-              | {" "}
-              <a href="#" className="text-blue-400 hover:underline">
-                LinkedIn
-              </a>
-            </p>
-          </div>
-        </footer>
+        <div className="container mx-auto px-4 text-center">
+          <p className="mb-2">
+            &copy; 2024 Edu_Consultancy. All rights reserved.
+          </p>
+          <p>
+            Follow us on{" "}
+            <a href="#" className="text-blue-400 hover:underline">
+              Twitter
+            </a>{" "}
+            |{" "}
+            <a href="#" className="text-blue-400 hover:underline">
+              LinkedIn
+            </a>
+          </p>
+        </div>
+      </footer>
 
       {/* Popup Modal for Blog Creation */}
       {/* {isCreateBlogOpen && (

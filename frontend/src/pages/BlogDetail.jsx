@@ -9,48 +9,59 @@ function BlogDetail() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Fetch blog data when the component mounts
     const fetchBlog = async () => {
       try {
         const response = await getBlogById(id);
-        console.log(response);
-        setBlog(response); // Set the fetched blog data
+        setBlog(response);
       } catch (err) {
         setError("Failed to fetch blog data. Please try again later.");
       } finally {
-        setLoading(false); // Stop loading
+        setLoading(false);
       }
     };
 
     fetchBlog();
   }, [id]);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
+  if (loading) return <p className="text-center text-gray-500">Loading...</p>;
+  if (error) return <p className="text-center text-red-500">{error}</p>;
 
   return (
-    <div>
-      <h1>{blog.title}</h1>
-      <img
-        src={blog.heroImg}
-        alt={blog.title}
-        style={{ width: "100%", maxHeight: "400px" }}
-      />
-      <p>
+    <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+      <h1 className="text-3xl font-bold mb-4 text-gray-800">{blog.title}</h1>
+      {blog.heroImg && (
+        <img
+          src={blog.heroImg}
+          alt={blog.title}
+          className="w-full max-h-96 object-cover rounded-lg mb-6"
+        />
+      )}
+      <p className="text-gray-600">
         <strong>Author:</strong> {blog.author}
       </p>
-      <p>
+      <p className="text-gray-600 mb-4">
         <strong>Published At:</strong>{" "}
         {new Date(blog.publishedAt).toLocaleDateString()}
       </p>
-      <div dangerouslySetInnerHTML={{ __html: blog.content }} />
-      <div>
-        <h3>Tags:</h3>
-        <ul>
-          {blog.tags &&
-            blog.tags.map((tag) => <li key={tag.id}>{tag.tagName}</li>)}
-        </ul>
-      </div>
+      <div
+        className="text-gray-800 leading-relaxed mb-6"
+        dangerouslySetInnerHTML={{ __html: blog.content }}
+      />
+      {blog.tags && blog.tags.length > 0 && (
+        <div className="mt-6">
+          <h3 className="text-lg font-semibold text-gray-700">Tags:</h3>
+          <div className="flex flex-wrap gap-2 mt-2">
+            {blog.tags.map((tag) => (
+              <span
+                key={tag.id}
+                className="px-3 py-1 bg-blue-100 text-blue-700 text-sm rounded-full"
+              >
+                {tag.tagName}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

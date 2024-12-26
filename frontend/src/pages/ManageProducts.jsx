@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-
+import API from "../utils/api.js";
 import Navbar from "../components/Navbar";
 
 import {
@@ -30,8 +30,9 @@ const ManageProducts = () => {
   // Fetch all products from the service
   const fetchProducts = async () => {
     try {
-      const res = await getFullProducts();
-      setProducts(res.courses);
+      const res = await API.get("/admin/courses");
+      const data = await res.data;
+      setProducts(data.courses);
     } catch (err) {
       console.error("Failed to fetch products", err);
     }
@@ -39,8 +40,8 @@ const ManageProducts = () => {
   // Fetch all categories from the service
   const fetchCategories = async () => {
     try {
-      const res = await getCategories();
-      setCategories(res);
+      const res = await API.get("/categories");
+      setCategories(res.data);
     } catch (err) {
       console.error("Failed to fetch categories", err);
     }
@@ -50,7 +51,7 @@ const ManageProducts = () => {
     const newProduct = {
       ...newProductData,
     };
-    const res = await createProduct(newProduct);
+    const res = await API.post("/admin/courses", newProduct);
     setProducts((prevProducts) => [...prevProducts, newProduct]);
     setShowCreatePopup(false);
     setNewProductData({
@@ -70,13 +71,12 @@ const ManageProducts = () => {
 
   // Delete a product by its ID
   const deleteProduct = async () => {
+    const res = await API.delete(`/admin/courses/${productToDelete}`);
     setProducts((prevProducts) =>
       prevProducts.filter((product) => product.id !== productToDelete)
     );
     setShowDeletePopup(false);
     setProductToDelete(null);
-
-    const res = await deleteProductById(productToDelete);
   };
 
   // Open the delete confirmation popup
@@ -127,7 +127,7 @@ const ManageProducts = () => {
         : editProductData.category,
     };
     delete data.category;
-    const res = await updateProduct(data);
+    const res = await API.put(`/admin/courses/${editProductData.id}`, data);
     setProducts((prevProducts) =>
       prevProducts.map((product) =>
         product.id === editProductData.id ? editProductData : product

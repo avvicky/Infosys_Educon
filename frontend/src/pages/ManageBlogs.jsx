@@ -4,7 +4,13 @@ import API from "../utils/api";
 
 const ManageBlogs = () => {
   const [blogs, setBlogs] = useState([]);
-  const [editBlogData, setEditBlogData] = useState(null);
+  const [editBlogData, setEditBlogData] = useState({
+    title: "",
+    content: "",
+    heroImg: "",
+    tagIds: [],
+    status: "DRAFT", // Default status
+  });
   const [isEditing, setIsEditing] = useState(false);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [blogToDelete, setBlogToDelete] = useState(null);
@@ -29,11 +35,21 @@ const ManageBlogs = () => {
     }
   };
 
+  const fetchTags = async () => {
+    try {
+      const res = await API.get("/tags");
+      console.log(res.data);
+      setTags(res.data);
+    } catch (err) {
+      console.error("Failed to fetch tags", err);
+    }
+  };
+
   const createNewBlog = async () => {
     const newBlog = { ...newBlogData };
     try {
       const res = await API.post("/admin/blogs", newBlog);
-      setBlogs((prevBlogs) => [...prevBlogs, res]);
+      setBlogs((prevBlogs) => [...prevBlogs, res.data]);
       setShowCreatePopup(false);
       setNewBlogData({
         title: "",
@@ -72,7 +88,7 @@ const ManageBlogs = () => {
   };
 
   const editBlog = (blog) => {
-    setEditBlogData({ ...blog });
+    setEditBlogData({ ...blog, tagIds: blog.tagIds || [] });
     setIsEditing(true);
   };
 
@@ -88,7 +104,7 @@ const ManageBlogs = () => {
         editBlogData
       );
       setBlogs((prevBlogs) =>
-        prevBlogs.map((blog) => (blog.id === editBlogData.id ? res : blog))
+        prevBlogs.map((blog) => (blog.id === editBlogData.id ? res.data : blog))
       );
       setIsEditing(false);
       setEditBlogData(null);
@@ -97,8 +113,21 @@ const ManageBlogs = () => {
     }
   };
 
+  const handleTagSelection = (id, isEdit = false) => {
+    const dataKey = isEdit ? "editBlogData" : "newBlogData";
+    const updateData = isEdit ? setEditBlogData : setNewBlogData;
+
+    updateData((prevData) => {
+      const tagIds = prevData.tagIds.includes(id)
+        ? prevData.tagIds.filter((tagId) => tagId !== id)
+        : [...prevData.tagIds, id];
+      return { ...prevData, tagIds };
+    });
+  };
+
   useEffect(() => {
     fetchBlogs();
+    fetchTags();
     return () => {
       setBlogs([]); // Cleanup
     };
@@ -201,6 +230,21 @@ const ManageBlogs = () => {
                 />
               </div>
               <div className="mb-4">
+                <label className="block text-gray-700 mb-2">Tags</label>
+                <div>
+                  {tags.map((tag) => (
+                    <label key={tag.id} className="inline-flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={editBlogData.tagIds.includes(tag.id)}
+                        onChange={() => handleTagSelection(tag.id, true)}
+                      />
+                      <span className="ml-2 text-black">{tag.tagName}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+              <div className="mb-4">
                 <label className="block text-gray-700 mb-2">Status</label>
                 <select
                   name="status"
@@ -263,6 +307,21 @@ const ManageBlogs = () => {
                   onChange={handleEditBlogChange}
                   className="w-full p-2 border border-gray-300 rounded"
                 />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700 mb-2">Tags</label>
+                <div>
+                  {tags.map((tag) => (
+                    <label key={tag.id} className="inline-flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={editBlogData.tagIds.includes(tag.id)}
+                        onChange={() => handleTagSelection(tag.id, true)}
+                      />
+                      <span className="ml-2">{tag.tagName}</span>
+                    </label>
+                  ))}
+                </div>
               </div>
               <div className="mb-4">
                 <label className="block text-gray-700 mb-2">Status</label>

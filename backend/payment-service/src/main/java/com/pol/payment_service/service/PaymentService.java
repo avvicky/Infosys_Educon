@@ -1,8 +1,10 @@
 package com.pol.payment_service.service;
 
+import com.pol.payment_service.client.EmailFeignClient;
 import com.pol.payment_service.client.ProductFeignClient;
 import com.pol.payment_service.dto.CoursePriceDTO;
 import com.pol.payment_service.dto.PaymentRequestDTO;
+import com.pol.payment_service.dto.PaymentSuccessRequestDto;
 import com.pol.payment_service.entity.Payment;
 import com.pol.payment_service.mapper.PaymentMapper;
 import com.pol.payment_service.repository.PaymentRepository;
@@ -14,11 +16,11 @@ import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.kafka.core.KafkaTemplate;
+//import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import com.pol.payment_service.schema.avro.PaymentSuccessfulEvent;
-import com.pol.payment_service.constants.KafkaTopics;
+//import com.pol.payment_service.schema.avro.PaymentSuccessfulEvent;
+//import com.pol.payment_service.constants.KafkaTopics;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -35,9 +37,10 @@ public class PaymentService {
     private final RazorpayClient razorpay;
     private final PaymentRepository paymentRepository;
     private final ProductFeignClient productFeignClient;
+    private final EmailFeignClient emailFeignClient;
 
     private static final Logger logger = LoggerFactory.getLogger(PaymentService.class);
-    private final KafkaTemplate<String, Object> kafkaTemplate;
+//    private final KafkaTemplate<String, Object> kafkaTemplate;
 
 
     @Value("${razorpay.key_secret}")
@@ -72,13 +75,20 @@ public class PaymentService {
         String razorpay_order_id = paymentDetails.get("razorpay_order_id");
         String razorpay_signature = paymentDetails.get("razorpay_signature");
 
-        PaymentSuccessfulEvent succesEvent = new PaymentSuccessfulEvent();
-        succesEvent.setEmail(paymentDetails.get("email"));
-        succesEvent.setSub(paymentDetails.get("sub"));
-        succesEvent.setPaymentId(paymentDetails.get("razorpay_payment_id"));
-        succesEvent.setUsername(paymentDetails.get("username"));
-        succesEvent.setProductId(paymentDetails.get("productId"));
-        succesEvent.setOrderId(paymentDetails.get("orderId"));
+//        PaymentSuccessfulEvent succesEvent = new PaymentSuccessfulEvent();
+//        succesEvent.setEmail(paymentDetails.get("email"));
+//        succesEvent.setSub(paymentDetails.get("sub"));
+//        succesEvent.setPaymentId(paymentDetails.get("razorpay_payment_id"));
+//        succesEvent.setUsername(paymentDetails.get("username"));
+//        succesEvent.setProductId(paymentDetails.get("productId"));
+//        succesEvent.setOrderId(paymentDetails.get("orderId"));
+
+        PaymentSuccessRequestDto requestDTO = new PaymentSuccessRequestDto();
+        requestDTO.setName(paymentDetails.get("username"));
+        requestDTO.setEmail(paymentDetails.get("email"));
+        requestDTO.setPaymentId(paymentDetails.get("razorpay_payment_id"));
+        requestDTO.setProductId(paymentDetails.get("productId"));
+        requestDTO.setOrderId(paymentDetails.get("orderId"));
 
 
         if(!paymentRepository.existsById(razorpay_order_id)){
@@ -88,7 +98,9 @@ public class PaymentService {
         boolean verified = Utils.verifyPaymentSignature(options,keySecret);
         if(verified){
             try {
-                kafkaTemplate.send(KafkaTopics.PaymentSuccessfulTopic, succesEvent);
+//                kafkaTemplate.send(KafkaTopics.PaymentSuccessfulTopic, succesEvent);
+//                logger.info("published Payment success event");
+                emailFeignClient.sendPaymentSuccessEmail(requestDTO);
             } catch (Exception kafkaException) {
                 logger.error("Failed to publish Payment Successful event to Kafka", kafkaException);
             }

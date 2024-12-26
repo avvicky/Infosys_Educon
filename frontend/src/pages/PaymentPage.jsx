@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { getUser } from "../services/authService";
 import API from "../utils/api";
+import Navbar from "../components/Navbar";
 
 const PaymentPage = () => {
   const [loading, setLoading] = useState(false);
@@ -87,24 +88,27 @@ const PaymentPage = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center p-6 bg-gray-100 rounded-lg shadow-md">
-      <h2 className="text-xl font-semibold text-gray-800 mb-4">
-        {product.title}
-      </h2>
-      <p className="text-gray-600 mb-6">{product.description}</p>
-      <div className="text-lg font-bold text-gray-900 mb-4">
-        ₹ {product.price}
+    <>
+      <Navbar />
+      <div className="flex flex-col items-center p-6 bg-gray-100 rounded-lg shadow-md">
+        <h2 className="text-xl font-semibold text-gray-800 mb-4">
+          {product.title}
+        </h2>
+        <p className="text-gray-600 mb-6">{product.description}</p>
+        <div className="text-lg font-bold text-gray-900 mb-4">
+          ₹ {product.price}
+        </div>
+        <button
+          onClick={handlePayment}
+          disabled={loading}
+          className={`py-2 px-4 rounded bg-purple-600 text-white font-semibold hover:bg-purple-500 ${
+            loading ? "opacity-50 cursor-not-allowed" : ""
+          }`}
+        >
+          {loading ? "Processing..." : "Buy Now"}
+        </button>
       </div>
-      <button
-        onClick={handlePayment}
-        disabled={loading}
-        className={`py-2 px-4 rounded bg-purple-600 text-white font-semibold hover:bg-purple-500 ${
-          loading ? "opacity-50 cursor-not-allowed" : ""
-        }`}
-      >
-        {loading ? "Processing..." : "Buy Now"}
-      </button>
-    </div>
+    </>
   );
 };
 

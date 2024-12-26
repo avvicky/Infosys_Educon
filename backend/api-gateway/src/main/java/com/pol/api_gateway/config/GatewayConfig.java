@@ -83,6 +83,11 @@ public class GatewayConfig {
                                 f.rewritePath("/admin/categories(?<segment>/?.*)", "/product-service/admin/categories${segment}")
                                         .filter(getJwtAuthorizationFilter(ADMIN_ONLY)))
                         .uri(PRODUCT_SERVICE_LB))
+                .route("feedback_route", r -> r.path("/feedback/**")
+                        .filters(f ->
+                                f.rewritePath("/feedback(?<segment>/?.*)", "/feedback-service/feedback{segment}"))
+                        .uri(FEEDBACK_SERVICE_LB))
+
 
                 .build();
     }
@@ -97,5 +102,7 @@ public class GatewayConfig {
     private static final String BLOG_SERVICE_LB = "lb://BLOG-SERVICE";
     private static final String PRODUCT_SERVICE_LB = "lb://PRODUCT-SERVICE";
     private static final String PAYMENT_SERVICE_LB = "lb://PAYMENT-SERVICE";
+    private static final String FEEDBACK_SERVICE_LB = "lb://FEEDBACK-SERVICE";
+
 }
 
