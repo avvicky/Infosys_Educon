@@ -5,6 +5,8 @@ eureka:
   client:
     serverUrl:
       defaultZone: http://localhost:8761/eureka/
+  instance:
+    preferIpAddress: true
 
 resend:
   key: re_gAePxYjU_C9uu9HQKpLR4ZFsQgcno3uTC

@@ -15,6 +15,7 @@ import BlogDetail from "./pages/BlogDetail";
 import ManageProducts from "./pages/ManageProducts";
 import ManageBlogs from "./pages/ManageBlogs";
 import PaymentPage from "./pages/PaymentPage";
+import ManageFeedbacks from "./pages/ManageFeedbacks";
 
 function App() {
   return (
@@ -62,6 +63,14 @@ function App() {
               element={
                 <ProtectedRoute roles={["ADMIN"]}>
                   <ManageProducts />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/manage-feedbacks"
+              element={
+                <ProtectedRoute roles={["ADMIN"]}>
+                  <ManageFeedbacks />
                 </ProtectedRoute>
               }
             />

@@ -22,7 +22,7 @@ public class BlogRequestDTO {
     @NotBlank(message = "Please write something")
     private String content;
 
-    @NotBlank
+    @NotBlank(message="please provide heroimg url")
     private String heroImg;
 
     @Size(max = 10, message = "You can add up to 10 tags only.")

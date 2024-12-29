@@ -1,10 +1,10 @@
-package com.pol.feedback;
+package com.pol.feedback_service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class FeedbackApplicationTests {
+class FeedbackServiceApplicationTests {
 
 	@Test
 	void contextLoads() {

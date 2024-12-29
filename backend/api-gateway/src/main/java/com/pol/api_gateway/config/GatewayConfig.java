@@ -85,10 +85,15 @@ public class GatewayConfig {
                         .uri(PRODUCT_SERVICE_LB))
                 .route("feedback_route", r -> r.path("/feedback/**")
                         .filters(f ->
-                                f.rewritePath("/feedback(?<segment>/?.*)", "/feedback-service/feedback{segment}"))
+                                f.rewritePath("/feedback(?<segment>/?.*)", "/feedback-service/feedback${segment}"))
                         .uri(FEEDBACK_SERVICE_LB))
 
-
+                // ADMIN ROUTES FOR THE FeedBack SERVICE
+                .route("feedback_service_admin", r -> r.path("/admin/feedbacks/**")
+                        .filters(f ->
+                                f.rewritePath("/admin/feedbacks(?<segment>/?.*)", "/feedback-service/admin/feedbacks${segment}")
+                                        .filter(getJwtAuthorizationFilter(ADMIN_ONLY)))
+                        .uri(FEEDBACK_SERVICE_LB))
                 .build();
     }
 

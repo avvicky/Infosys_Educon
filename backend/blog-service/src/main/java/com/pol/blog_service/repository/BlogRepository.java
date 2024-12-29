@@ -10,9 +10,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -63,6 +65,10 @@ public interface BlogRepository extends JpaRepository<Blog, UUID> {
     @Query("SELECT b FROM Blog b JOIN FETCH b.tags WHERE b.id = :blogId AND b.status = :status")
     Optional<Blog> findByIdAndStatusWithTags(@Param("blogId") UUID blogId, @Param("status") BlogStatus status);
 
+//    @Modifying
+//    @Transactional
+//    @Query("DELETE FROM blog_tags WHERE blog_id = :blogId")
+//    void deleteTagsByBlogId(@Param("blogId") UUID blogId);
 
 }
 

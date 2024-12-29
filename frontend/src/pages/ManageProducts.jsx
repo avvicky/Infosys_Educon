@@ -22,7 +22,7 @@ const ManageProducts = () => {
     title: "",
     description: "",
     summary: "",
-    category: "",
+    categoryId: "",
     price: "",
     status: "ACTIVE", // Default status
   });
@@ -51,14 +51,16 @@ const ManageProducts = () => {
     const newProduct = {
       ...newProductData,
     };
+
+    console.log(newProduct);
     const res = await API.post("/admin/courses", newProduct);
-    setProducts((prevProducts) => [...prevProducts, newProduct]);
+    setProducts((prevProducts) => [...prevProducts, res.data]);
     setShowCreatePopup(false);
     setNewProductData({
       title: "",
       description: "",
       summary: "",
-      category: "",
+      categoryId: "",
       price: "",
       status: "ACTIVE", // Reset to default
     });
@@ -108,7 +110,7 @@ const ManageProducts = () => {
     const selectedCategoryId = e.target.value;
     setNewProductData((prevData) => ({
       ...prevData,
-      category: selectedCategoryId,
+      categoryId: selectedCategoryId,
     }));
   };
   const handleStatusChange = (e) => {
@@ -127,6 +129,7 @@ const ManageProducts = () => {
         : editProductData.category,
     };
     delete data.category;
+    console.log(data);
     const res = await API.put(`/admin/courses/${editProductData.id}`, data);
     setProducts((prevProducts) =>
       prevProducts.map((product) =>

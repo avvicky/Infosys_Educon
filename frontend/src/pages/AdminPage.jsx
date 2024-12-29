@@ -24,10 +24,10 @@ const AdminPage = () => {
           Manage Blogs
         </Link>
         <Link
-          to="/entrollments"
+          to="/manage-feedbacks"
           className="bg-blue-700  py-2 px-6 rounded-full actionbutton"
         >
-          View Course Entrollments
+          View Feedbacks
         </Link>
       </div>
     </>
