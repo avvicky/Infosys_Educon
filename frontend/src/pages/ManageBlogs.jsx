@@ -58,6 +58,7 @@ const ManageBlogs = () => {
         tagIds: [],
         status: "DRAFT",
       });
+      fetchBlogs();
     } catch (err) {
       console.error("Failed to create blog", err);
     }
@@ -71,7 +72,8 @@ const ManageBlogs = () => {
   // Delete a blog by its ID
   const deleteBlog = async () => {
     try {
-      await API.delete(`/admin/blogs/${blogToDelete}`);
+      const res = await API.delete(`/admin/blogs/${blogToDelete}`);
+      console.log(res);
       setBlogs((prevBlogs) =>
         prevBlogs.filter((blog) => blog.id !== blogToDelete)
       );
@@ -99,15 +101,18 @@ const ManageBlogs = () => {
 
   const saveEdit = async () => {
     try {
+      console.log(editBlogData);
       const res = await API.put(
         `/admin/blogs/${editBlogData.id}`,
         editBlogData
       );
+      console.log(res);
       setBlogs((prevBlogs) =>
         prevBlogs.map((blog) => (blog.id === editBlogData.id ? res.data : blog))
       );
       setIsEditing(false);
       setEditBlogData(null);
+      fetchBlogs();
     } catch (err) {
       console.error("Failed to update blog", err);
     }
@@ -118,9 +123,10 @@ const ManageBlogs = () => {
     const updateData = isEdit ? setEditBlogData : setNewBlogData;
 
     updateData((prevData) => {
-      const tagIds = prevData.tagIds.includes(id)
-        ? prevData.tagIds.filter((tagId) => tagId !== id)
-        : [...prevData.tagIds, id];
+      const tagIds =
+        prevData.tagIds && prevData.tagIds.includes(id)
+          ? prevData.tagIds.filter((tagId) => tagId !== id)
+          : [...prevData.tagIds, id];
       return { ...prevData, tagIds };
     });
   };
@@ -236,8 +242,8 @@ const ManageBlogs = () => {
                     <label key={tag.id} className="inline-flex items-center">
                       <input
                         type="checkbox"
-                        checked={editBlogData.tagIds.includes(tag.id)}
-                        onChange={() => handleTagSelection(tag.id, true)}
+                        checked={newBlogData.tagIds.includes(tag.id)}
+                        onChange={() => handleTagSelection(tag.id)}
                       />
                       <span className="ml-2 text-black">{tag.tagName}</span>
                     </label>
@@ -368,7 +374,7 @@ const ManageBlogs = () => {
                   Cancel
                 </button>
                 <button
-                  onClick={deleteBlog}
+                  onClick={() => deleteBlog()}
                   className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
                 >
                   Delete

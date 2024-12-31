@@ -1,13 +1,13 @@
-package com.pol.feedback;
+package com.pol.feedback_service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class FeedbackApplication {
+public class FeedbackServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(FeedbackApplication.class, args);
+		SpringApplication.run(FeedbackServiceApplication.class, args);
 	}
 
 }

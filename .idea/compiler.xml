@@ -6,7 +6,6 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="feedback" />
         <module name="config-server" />
         <module name="payment-service" />
         <module name="email-service" />
@@ -14,9 +13,13 @@
         <module name="product-service" />
         <module name="user-service" />
         <module name="blog-service" />
+        <module name="feedback-service" />
         <module name="service-registry" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="feedback" target="17" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
@@ -25,6 +28,7 @@
       <module name="config-server" options="-parameters" />
       <module name="email-service" options="-parameters" />
       <module name="feedback" options="-parameters" />
+      <module name="feedback-service" options="-parameters" />
       <module name="payment-service" options="-parameters" />
       <module name="product-service" options="-parameters" />
       <module name="service-registry" options="-parameters" />

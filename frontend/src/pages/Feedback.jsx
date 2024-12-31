@@ -2,6 +2,8 @@ import React, { useState } from "react";
 
 import Navbar from "../components/Navbar";
 
+import API from "../utils/api";
+
 const Feedback = () => {
   const [inputs, setInputs] = useState({
     name: "",
@@ -17,9 +19,20 @@ const Feedback = () => {
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(inputs);
+
+    // Send feedback to the server
+    const res = await API.post("/feedback", inputs);
+    if (!res.ok) {
+      return alert("Failed to submit feedback");
+    }
+    // Reset the form and show the success popup
+    setInputs({
+      name: "",
+      email: "",
+      feedback: "",
+    });
     setShowPopup(true);
   };
 

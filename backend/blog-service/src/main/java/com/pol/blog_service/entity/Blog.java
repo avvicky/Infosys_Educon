@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -40,12 +42,13 @@ public class Blog {
 
     private UUID authorId;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.EAGER,  cascade = {CascadeType.PERSIST,CascadeType.MERGE})
     @JoinTable(
             name = "blog_tags",
             joinColumns = @JoinColumn(name = "blog_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Tags> tags;
 
     @Column(updatable = false)

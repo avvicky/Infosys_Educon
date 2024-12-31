@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -49,6 +50,7 @@ public class BlogServiceImpl implements BlogService{
         blog.setTitle(blogRequestDTO.getTitle());
         blog.setContent(blogRequestDTO.getContent());
         blog.setStatus(blogRequestDTO.getStatus());
+        blog.setHeroImg(blogRequestDTO.getHeroImg());
         blog.setTags(new HashSet<>(tagsRepository.findAllById(blogRequestDTO.getTagIds())));
         blog.setPublishedAt(blogRequestDTO.getStatus()== BlogStatus.PUBLISHED? LocalDateTime.now():null);
         return BlogMapper.toResponseDTO(blogRepository.save(blog));
@@ -62,13 +64,18 @@ public class BlogServiceImpl implements BlogService{
     }
 
     @Override
+    @Transactional
     public void deleteBlogById(UUID id,String userId){
         Blog blog = blogRepository.findById(id).orElseThrow(()->new EntityNotFound("Blog not found with id : "+id));
         if(!UUID.fromString(userId).equals(blog.getAuthorId())){
             throw new UnauthorizedActionException("You are not authorized to delete this blog.");
         }
+//        blogRepository.deleteTagsByBlogId(id);
+        blog.setTags(null);
+        blogRepository.save(blog);
         blogRepository.deleteById(id);
     }
+
 
     @Override
     public BlogPageResponseDTO getAllBlogs(int page, int size, String sortBy, String order) {
